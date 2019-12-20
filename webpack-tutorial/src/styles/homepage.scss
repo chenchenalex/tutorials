@@ -1,0 +1,13 @@
+
+div {
+    color: red;
+}
+
+.list{
+    color: black;
+    .item{
+        &:first-of-type{
+            text-decoration: underline;
+        }
+    }
+}
