@@ -5,12 +5,6 @@ import Signout from "./Signout";
 
 const Nav = () => (
   <NavStyles>
-    <User>
-      {({ data: { me } }) => {
-        if (me) return <p>{me.name}</p>;
-        return null;
-      }}
-    </User>
     <Link href="/items">
       <a>Shop</a>
     </Link>
@@ -26,12 +20,6 @@ const Nav = () => (
     <Link href="/me">
       <a>Account</a>
     </Link>
-    <User>
-      {({ data: { me } }) => {
-        if (me) return <Signout />;
-        return null;
-      }}
-    </User>
   </NavStyles>
 );
 

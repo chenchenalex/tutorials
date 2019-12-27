@@ -1,3 +1,6 @@
+// this file defines the initial state of server side rendered document
+// we added styles to prevent style flickering during load
+
 import Document, { Head, Main, NextScript } from "next/document";
 import { ServerStyleSheet } from "styled-components";
 
