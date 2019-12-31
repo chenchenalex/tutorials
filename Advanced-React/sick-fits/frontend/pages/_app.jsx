@@ -6,6 +6,7 @@ import withData from "../lib/withData";
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
     let pageProps = {};
+    // crawl all queries on the page like cart, product list before rendering the page
     if (Component.getInitialProps) {
       pageProps = await Component.getInitialProps(ctx);
     }

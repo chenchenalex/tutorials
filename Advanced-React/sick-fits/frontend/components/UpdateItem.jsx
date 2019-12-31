@@ -45,23 +45,23 @@ class UpdateItem extends Component {
     const val = type === "number" ? parseFloat(value) : value;
 
     this.setState({
-      [name]: val
+      [name]: val,
     });
   };
 
   updateItem = async (e, updateItemMutation) => {
     e.preventDefault();
 
-    console.log("updating item", this.state);
-
     const res = await updateItemMutation({
       variables: {
         id: this.props.id,
-        ...this.state
-      }
+        ...this.state,
+      },
     });
 
-    console.log("Updated", res);
+    Router.push({
+      pathname: "/",
+    });
   };
 
   render() {
@@ -69,13 +69,15 @@ class UpdateItem extends Component {
       <Query
         query={SINGLE_ITEM_QUERY}
         variables={{
-          id: this.props.id
+          id: this.props.id,
         }}
       >
         {({ data, loading }) => {
           if (loading) return <p>loading...</p>;
-          if (!data.item)
+          if (!data.item) {
             return <p>No Item found for this ID {this.props.id}</p>;
+          }
+
           return (
             <Mutation mutation={UPDATE_ITEM_MUTATION} variables={this.state}>
               {(updateItem, { loading, error }) => (

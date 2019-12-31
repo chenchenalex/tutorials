@@ -21,8 +21,7 @@ const Pagination = ({ page }) => {
     <Query query={PAGINATION_QUERY}>
       {({ data, error, loading }) => {
         if (loading) return <p>loading...</p>;
-        // const count = data.itemsConnection.aggregate.count;
-        const count = 1;
+        const count = data.itemsConnection.aggregate.count;
         const pages = Math.ceil(count / perPage);
 
         return (
@@ -43,7 +42,7 @@ const Pagination = ({ page }) => {
             <p>
               Page {page} of {pages}
             </p>
-            {/* <p>{count} Items total</p> */}
+            <p>{count} Items total</p>
             <Link
               prefetch
               href={{ pathname: "/items", query: { page: page + 1 } }}

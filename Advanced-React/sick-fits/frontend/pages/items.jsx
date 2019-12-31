@@ -7,7 +7,7 @@ import Pagination from "../components/Pagination";
 import { perPage } from "../config";
 
 const ALL_ITEMS_QUERY = gql`
-  query ALL_ITEMS_QUERY($skip: Int = 0, $first: Int) {
+  query ALL_ITEMS_QUERY($skip: Int = 0, $first: Int = ${perPage}) {
     items(skip: $skip, first: $first, orderBy: createdAt_DESC) {
       id
       title
@@ -39,7 +39,6 @@ class Items extends Component {
           query={ALL_ITEMS_QUERY}
           variables={{
             skip: this.props.query.page * perPage - perPage,
-            first: perPage,
           }}
         >
           {({ data, error, loading }) => {

@@ -4,6 +4,8 @@ import gql from "graphql-tag";
 import Router from "next/router";
 import Form from "./styles/Form";
 import formatMoney from "../lib/formatMoney";
+import styled from "styled-components";
+import { ALL_ITEMS_QUERY } from "../pages/items";
 import Error from "./ErrorMessage";
 
 const CREATE_ITEM_MUTATION = gql`
@@ -22,7 +24,19 @@ const CREATE_ITEM_MUTATION = gql`
       largeImage: $largeImage
     ) {
       id
+      title
+      description
+      price
+      image
+      largeImage
     }
+  }
+`;
+
+const StyledButton = styled.button`
+  &[disabled] {
+    background: grey;
+    color: white;
   }
 `;
 
@@ -32,7 +46,7 @@ class CreateItem extends Component {
     description: "Bao bao rou",
     image: "",
     largeImage: "",
-    price: 120
+    price: 120,
   };
 
   handleChange = e => {
@@ -40,7 +54,7 @@ class CreateItem extends Component {
     const val = type === "number" ? parseFloat(value) : value;
 
     this.setState({
-      [name]: val
+      [name]: val,
     });
   };
 
@@ -50,22 +64,26 @@ class CreateItem extends Component {
     data.append("file", files[0]);
     data.append("upload_preset", "sickfits");
 
-    console.log("UPloading file...");
+    this.setState({
+      uploadFile: true,
+    });
+
     const res = await fetch(
       "https://api.cloudinary.com/v1_1/dqpfnofx9/image/upload/",
       {
         method: "POST",
-        body: data
-      }
+        body: data,
+      },
     );
 
     const file = await res.json();
 
+    // TODO: set form ready to submit after image is successfully loaded
     this.setState({
+      uploadFile: false,
       image: file.secure_url,
-      largeImage: file.eager && file.eager[0].secure_url
+      largeImage: file.eager && file.eager[0].secure_url,
     });
-    console.log(file);
   };
 
   render() {
@@ -81,15 +99,14 @@ class CreateItem extends Component {
               // redirect to item page
               Router.push({
                 pathname: "/item",
-                query: { id: res.data.createItem.id }
+                query: { id: res.data.createItem.id },
               });
-              console.log(res);
             }}
           >
             <Error error={error} />
             <fieldset disabled={loading} aria-busy={loading}>
               <label htmlFor="file">
-                File
+                Upload image
                 <input
                   type="file"
                   id="file"
@@ -148,7 +165,9 @@ class CreateItem extends Component {
                 />
               </label>
             </fieldset>
-            <button type="submit">Submit</button>
+            <StyledButton type="submit" disabled={this.state.uploadFile}>
+              Submit{loading && "ing"}
+            </StyledButton>
           </Form>
         )}
       </Mutation>

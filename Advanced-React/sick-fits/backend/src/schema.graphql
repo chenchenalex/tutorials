@@ -1,5 +1,8 @@
 # import * from './generated/prisma.graphql'
 # SuccessMessage custom type
+
+# this file is covering all query and mutations on top of prisma, or called public facing API
+# which can overwrites or add additioanl apis in graphql yoga layer
 type SuccessMessage {
   message: String
 }
