@@ -3,9 +3,7 @@ import { Mutation } from "react-apollo";
 import gql from "graphql-tag";
 import Router from "next/router";
 import Form from "./styles/Form";
-import formatMoney from "../lib/formatMoney";
 import styled from "styled-components";
-import { ALL_ITEMS_QUERY } from "../pages/items";
 import Error from "./ErrorMessage";
 
 const CREATE_ITEM_MUTATION = gql`
@@ -78,7 +76,7 @@ class CreateItem extends Component {
 
     const file = await res.json();
 
-    // TODO: set form ready to submit after image is successfully loaded
+    // set form ready to submit after image is successfully loaded
     this.setState({
       uploadFile: false,
       image: file.secure_url,

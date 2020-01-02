@@ -40,7 +40,7 @@ type Query {
   me: User
 }
 
-# overwrite prisma schema to expose some fields only to frontend
+# overwrite prisma schema to prevent leaking reset token to frontend
 type User {
   id: ID!
   name: String!
