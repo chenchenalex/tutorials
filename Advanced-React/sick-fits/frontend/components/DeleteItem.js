@@ -4,7 +4,7 @@ import gql from "graphql-tag";
 import { ALL_ITEMS_QUERY } from "../pages/items";
 
 const DELETE_ITEM_MUTAION = gql`
-  mutation DELETE_ITEM_MUTAION($id: ID!) {
+  mutation DELETE_ITEM_MUTATION($id: ID!) {
     deleteItem(id: $id) {
       id
     }
@@ -19,7 +19,7 @@ class DeleteItem extends Component {
 
     // 2. filter the deleted item
     data.items = data.items.filter(
-      item => item.id !== payload.data.deleteItem.id
+      item => item.id !== payload.data.deleteItem.id,
     );
 
     cache.writeQuery({ query: ALL_ITEMS_QUERY, data });
@@ -37,8 +37,11 @@ class DeleteItem extends Component {
           return (
             <button
               onClick={() => {
-                if (confirm("Are you sure you want to delete this?"))
-                  deleteItem();
+                if (confirm("Are you sure you want to delete this?")) {
+                  deleteItem().catch(err => {
+                    alert(err.message);
+                  });
+                }
               }}
             >
               {this.props.children}

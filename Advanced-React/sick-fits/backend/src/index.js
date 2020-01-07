@@ -20,6 +20,23 @@ server.express.use((req, res, next) => {
   next();
 });
 
+// expose the user in each request if they are logged in
+server.express.use(async (req, res, next) => {
+  if (!req.userId) return next();
+
+  const user = await db.query.user(
+    {
+      where: {
+        id: req.userId,
+      },
+    },
+    `{id, permissions, email, name}`,
+  );
+
+  req.user = user;
+  next();
+});
+
 server.start(
   {
     cors: {

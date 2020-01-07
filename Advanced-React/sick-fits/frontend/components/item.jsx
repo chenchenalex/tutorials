@@ -6,6 +6,7 @@ import ItemStyles from "./styles/ItemStyles";
 import PriceTag from "./styles/PriceTag";
 import formatMoney from "../lib/formatMoney";
 import DeleteItem from "./DeleteItem";
+import AddToCart from "./AddToCart";
 
 class item extends Component {
   render() {
@@ -27,7 +28,7 @@ class item extends Component {
             <a>Edit ✏️</a>
           </Link>
 
-          <button>Add to cart</button>
+          <AddToCart id={item.id} />
           <DeleteItem id={item.id}>Delete Item</DeleteItem>
         </div>
       </ItemStyles>
@@ -36,7 +37,7 @@ class item extends Component {
 }
 
 item.propTypes = {
-  item: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired,
 };
 
 export default item;
