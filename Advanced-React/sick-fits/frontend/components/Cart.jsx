@@ -4,6 +4,7 @@ import { Query, Mutation } from "react-apollo";
 import CartStyles from "./styles/CartStyles";
 import Supreme from "./styles/Supreme";
 import User from "./User";
+import formatMoney from "../lib/formatMoney";
 import CloseButton from "./styles/CloseButton";
 import SickButton from "./styles/SickButton";
 import CartItem from "./CartItem";
@@ -48,7 +49,16 @@ const Cart = () => {
                       ))}
                     </ul>
                     <footer>
-                      <p>10.10</p>
+                      <p>
+                        {formatMoney(
+                          me.cart.reduce(
+                            (total, cartItem) =>
+                              (total +=
+                                cartItem.item.price * cartItem.quantity),
+                            0,
+                          ),
+                        )}
+                      </p>
                       <SickButton>Checkout</SickButton>
                     </footer>
                   </CartStyles>
