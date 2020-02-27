@@ -24,19 +24,37 @@ export default function createRoutes(store) {
         const importModules = Promise.all([
           System.import("containers/HomePage"),
           System.import("containers/NavigationContainer/reducer.js"),
-          System.import("containers/NavigationContainer/sagas.js")
+          System.import("containers/NavigationContainer/sagas.js"),
+          System.import("containers/LinkListContainer/reducer.js"),
+          System.import("containers/LinkListContainer/sagas.js"),
         ]);
 
         const renderRoute = loadModule(cb);
 
-        importModules.then(([component, reducer, saga]) => {
-          injectReducer("navigationContainer", reducer.default);
-          injectSagas("navigationContainer", saga.default);
-          renderRoute(component);
-        });
+        importModules.then(
+          ([
+            component,
+            navigationContainerReducer,
+            navigationContainerSaga,
+            LinkListContainerReducer,
+            LinkListContainerSaga,
+          ]) => {
+            injectReducer(
+              "navigationContainer",
+              navigationContainerReducer.default,
+            );
+            injectSagas("navigationContainer", navigationContainerSaga.default);
+            injectReducer(
+              "LinkListContainer",
+              LinkListContainerReducer.default,
+            );
+            injectSagas("LinkListContainer", LinkListContainerSaga.default);
+            renderRoute(component);
+          },
+        );
 
         importModules.catch(errorLoading);
-      }
+      },
     },
     {
       path: "*",
@@ -45,7 +63,7 @@ export default function createRoutes(store) {
         System.import("containers/NotFoundPage")
           .then(loadModule(cb))
           .catch(errorLoading);
-      }
-    }
+      },
+    },
   ];
 }
