@@ -1,7 +1,8 @@
 // import { take, call, put, select } from 'redux-saga/effects';
 import { REQUEST_TOPICS } from "./constants";
 import { takeLatest } from "redux-saga";
-import { call } from "redux-saga/effects";
+import { call, put } from "redux-saga/effects";
+import { requestTopicsSucceeded, requestTopicsFailed } from "./actions";
 
 // Individual exports for testing
 export function* fetchTopicsSaga() {
@@ -9,12 +10,16 @@ export function* fetchTopicsSaga() {
 }
 
 function* fetchTopics() {
-  const result = call(fetchTopicsFromServer);
-  console.log("return from the server!", result);
+  try {
+    const topics = yield call(fetchTopicsFromServer);
+    yield put(requestTopicsSucceeded(topics));
+  } catch (e) {
+    yield put(requestTopicsFailed(e.message));
+  }
 }
 
 export function fetchTopicsFromServer() {
-  return fetch("https://localhost:3000/api/topics").then(res => res.json());
+  return fetch("http://localhost:3000/api/topics").then(res => res.json());
 }
 
 // All sagas to be loaded
