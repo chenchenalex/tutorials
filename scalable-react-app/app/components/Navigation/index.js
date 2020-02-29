@@ -7,20 +7,22 @@
 import React, { PropTypes } from "react";
 
 import styles from "./styles.css";
+import AppBar from "../AppBar";
 
 function Navigation({ topics, selectTopic }) {
   return (
-    <ul className={styles.navigation}>
+    <div className={styles.navigation}>
+      <AppBar />
       {topics.map(topic => (
-        <li key={topic.name} onClick={() => selectTopic(topic.name)}>
+        <div key={topic.name} onClick={() => selectTopic(topic.name)}>
           {topic.name}
-        </li>
+        </div>
       ))}
-    </ul>
+    </div>
   );
 }
 
-Navigation.proptypes = {
+Navigation.propTypes = {
   topics: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string.isRequired,

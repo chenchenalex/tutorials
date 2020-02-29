@@ -4,10 +4,18 @@
  *
  */
 
-import { DEFAULT_ACTION } from "./constants";
+import { REQUEST_LINKS_FAILED, REQUEST_LINKS_SUCCEEDED } from "./constants";
 
-export function defaultAction() {
+export function requestLinksSucceeded(links) {
   return {
-    type: DEFAULT_ACTION,
+    type: REQUEST_LINKS_SUCCEEDED,
+    links,
+  };
+}
+
+export function requestLinksFailed(message) {
+  return {
+    type: REQUEST_LINKS_FAILED,
+    message,
   };
 }

@@ -5,19 +5,16 @@
  */
 
 import { fromJS } from "immutable";
-import {} from "./constants";
+import { REQUEST_LINKS_SUCCEEDED } from "./constants";
 
 const initialState = fromJS({
-  links: [
-    {
-      description: "this is my link",
-      url: "https://github.com/chenchenalex",
-    },
-  ],
+  links: [],
 });
 
 function LinkListContainerReducer(state = initialState, action) {
   switch (action.type) {
+    case REQUEST_LINKS_SUCCEEDED:
+      return state.set("links", action.links);
     default:
       return state;
   }
