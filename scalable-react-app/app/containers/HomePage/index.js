@@ -19,8 +19,8 @@ export default class HomePage extends React.Component {
   render() {
     return (
       <div>
-        <LinkListContainer />
         <NavigationContainer />
+        <LinkListContainer />
       </div>
     );
   }

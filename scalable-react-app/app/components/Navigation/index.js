@@ -9,10 +9,10 @@ import React, { PropTypes } from "react";
 import styles from "./styles.css";
 import AppBar from "../AppBar";
 
-function Navigation({ topics, selectTopic }) {
+function Navigation({ topics, selectTopic, toggleDrawer }) {
   return (
     <div className={styles.navigation}>
-      <AppBar />
+      <AppBar toggleDrawer={toggleDrawer} />
       {topics.map(topic => (
         <div key={topic.name} onClick={() => selectTopic(topic.name)}>
           {topic.name}
@@ -30,6 +30,7 @@ Navigation.propTypes = {
     }),
   ).isRequired,
   selectTopic: PropTypes.func.isRequired,
+  toggleDrawer: PropTypes.func.isRequired,
 };
 
 export default Navigation;
