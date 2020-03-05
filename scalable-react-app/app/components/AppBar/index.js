@@ -20,8 +20,8 @@ function AppBar({ toggleDrawer }) {
   );
 }
 
-AppBar.propTypes = PropTypes.shape({
+AppBar.propTypes = {
   toggleDrawer: PropTypes.func.isRequired,
-});
+};
 
 export default AppBar;
