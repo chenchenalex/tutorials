@@ -25,8 +25,6 @@ export default function createRoutes(store) {
           System.import("containers/HomePage"),
           System.import("containers/NavigationContainer/reducer.js"),
           System.import("containers/NavigationContainer/sagas.js"),
-          System.import("containers/LinkListContainer/reducer.js"),
-          System.import("containers/LinkListContainer/sagas.js"),
         ]);
 
         const renderRoute = loadModule(cb);
@@ -36,25 +34,41 @@ export default function createRoutes(store) {
             component,
             navigationContainerReducer,
             navigationContainerSaga,
-            LinkListContainerReducer,
-            LinkListContainerSaga,
           ]) => {
             injectReducer(
               "navigationContainer",
               navigationContainerReducer.default,
             );
             injectSagas("navigationContainer", navigationContainerSaga.default);
-            injectReducer(
-              "LinkListContainer",
-              LinkListContainerReducer.default,
-            );
-            injectSagas("LinkListContainer", LinkListContainerSaga.default);
             renderRoute(component);
           },
         );
 
         importModules.catch(errorLoading);
       },
+      childRoutes: [
+        {
+          path: "/topics/:topicName",
+          name: "LinkListContainer",
+          getComponent(nextState, cb) {
+            const importModules = Promise.all([
+              System.import("containers/LinkListContainer/reducer"),
+              System.import("containers/LinkListContainer/sagas"),
+              System.import("containers/LinkListContainer"),
+            ]);
+
+            const renderRoute = loadModule(cb);
+
+            importModules.then(([reducer, sagas, component]) => {
+              injectReducer("LinkListContainer", reducer.default);
+              injectSagas("LinkListContainer", sagas.default);
+              renderRoute(component);
+            });
+
+            importModules.catch(errorLoading);
+          },
+        },
+      ],
     },
     {
       path: "*",
