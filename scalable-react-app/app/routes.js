@@ -68,8 +68,32 @@ export default function createRoutes(store) {
             importModules.catch(errorLoading);
           },
         },
+        {
+          path: "/login",
+          name: "loginContainer",
+          getComponent(nextState, cb) {
+            const importModules = Promise.all([
+              System.import("containers/LoginContainer"),
+              System.import("containers/LoginContainer/reducer.js"),
+              System.import("containers/LoginContainer/sagas.js"),
+            ]);
+
+            const renderRoute = loadModule(cb);
+
+            importModules.then(
+              ([component, LoginContainerReducer, LoginContainerSaga]) => {
+                injectReducer("loginContainer", LoginContainerReducer.default);
+                injectSagas("loginContainer", LoginContainerSaga.default);
+                renderRoute(component);
+              },
+            );
+
+            importModules.catch(errorLoading);
+          },
+        },
       ],
     },
+
     {
       path: "*",
       name: "notfound",
