@@ -6,7 +6,7 @@
 
 import React, { PropTypes } from "react";
 import FontAwesome from "react-fontawesome";
-import { Link } from "react-router-redux";
+import { Link } from "react-router";
 import styles from "./styles.css";
 
 function AppBar({ toggleDrawer }) {
@@ -17,7 +17,9 @@ function AppBar({ toggleDrawer }) {
       </div>
       <div className={styles.heading}>Coder Monthly</div>
       <div className={styles.linkContainer}>
-        <Link to="/login">Log in</Link>
+        <Link to="/login" className={styles.link}>
+          Log in
+        </Link>
       </div>
     </div>
   );
