@@ -67,6 +67,41 @@ export default function createRoutes(store) {
 
             importModules.catch(errorLoading);
           },
+          childRoutes: [
+            {
+              path: "/topics/:topicName/add",
+              name: "linkFormContainer",
+              getComponent(nextState, cb) {
+                const importModules = Promise.all([
+                  System.import("containers/LinkFormContainer"),
+                  System.import("containers/LinkFormContainer/reducer.js"),
+                  System.import("containers/LinkFormContainer/sagas.js"),
+                ]);
+
+                const renderRoute = loadModule(cb);
+
+                importModules.then(
+                  ([
+                    component,
+                    LinkFormContainerReducer,
+                    LinkFormContainerSaga,
+                  ]) => {
+                    injectReducer(
+                      "linkFormContainer",
+                      LinkFormContainerReducer.default,
+                    );
+                    injectSagas(
+                      "linkFormContainer",
+                      LinkFormContainerSaga.default,
+                    );
+                    renderRoute(component);
+                  },
+                );
+
+                importModules.catch(errorLoading);
+              },
+            },
+          ],
         },
         {
           path: "/login",

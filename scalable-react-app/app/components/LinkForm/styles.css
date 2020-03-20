@@ -1,3 +1,47 @@
-.linkForm { /* stylelint-disable */
+.linkForm {
+  /* stylelint-disable */
+  background-color: #fff;
+  padding: 10px;
+  width: 320px;
+  padding: 25px;
+  border-radius: 2px;
+  position: fixed;
+  top: 25%;
+  left: 50%;
+  margin-left: -160px;
+}
 
+.heading {
+  font-size: 22px;
+  color: #222;
+  margin-bottom: 20px;
+}
+
+.overlay {
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  position: fixed;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1;
+  overflow-x: hidden;
+}
+
+.actionContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 25px;
+}
+.button {
+  text-transform: uppercase;
+  padding: 10px;
+  border-radius: 2;
+  cursor: pointer;
+  color: #00afcc;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    font-weight: 700;
+  }
 }

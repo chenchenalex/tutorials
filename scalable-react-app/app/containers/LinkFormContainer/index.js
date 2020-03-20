@@ -4,16 +4,15 @@
  *
  */
 
-import React from 'react';
-import { connect } from 'react-redux';
-import selectLinkFormContainer from './selectors';
+import React from "react";
+import { connect } from "react-redux";
+import LinkForm from "../../components/LinkForm";
+import selectLinkFormContainer from "./selectors";
 
-export class LinkFormContainer extends React.Component { // eslint-disable-line react/prefer-stateless-function
+export class LinkFormContainer extends React.Component {
+  // eslint-disable-line react/prefer-stateless-function
   render() {
-    return (
-      <div>
-      </div>
-    );
+    return <LinkForm {...this.props} />;
   }
 }
 
