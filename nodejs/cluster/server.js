@@ -6,3 +6,7 @@ http
     res.end(`Ok, handled by ${process.pid}`);
   })
   .listen(8080);
+
+process.on("message", (msg) => {
+  console.log("Message from master:" + msg);
+});
