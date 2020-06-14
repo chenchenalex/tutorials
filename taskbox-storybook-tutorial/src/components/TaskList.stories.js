@@ -1,11 +1,11 @@
 import React from "react";
 
-import TaskList from "./TaskList";
+import { PureTaskList } from "./TaskList";
 
 import { taskData, actionsData } from "./Task.stories";
 
 export default {
-  component: TaskList,
+  component: PureTaskList,
   title: "Task list",
   decorators: [(story) => <div style={{ padding: "3rem" }}>{story()}</div>],
   excludeStories: /.*Data/,
@@ -26,13 +26,15 @@ export const withPinnedTasksData = [
 ];
 
 export const Default = () => (
-  <TaskList tasks={defaultTasksData} {...actionsData} />
+  <PureTaskList tasks={defaultTasksData} {...actionsData} />
 );
 
 export const WithPinnedTasks = () => (
-  <TaskList tasks={withPinnedTasksData} {...actionsData} />
+  <PureTaskList tasks={withPinnedTasksData} {...actionsData} />
 );
 
-export const Loading = () => <TaskList loading tasks={[]} {...actionsData} />;
+export const Loading = () => (
+  <PureTaskList loading tasks={[]} {...actionsData} />
+);
 
-export const Empty = () => <TaskList tasks={[]} {...actionsData} />;
+export const Empty = () => <PureTaskList tasks={[]} {...actionsData} />;
