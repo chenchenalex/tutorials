@@ -16,7 +16,8 @@ const main = async () => {
   const app = express();
 
   app.listen(4000, () => {
-    console.log("server started at localhost:4000");
+    console.log("server started at http://localhost:4000");
+    console.log("graphql started at http://localhost:4000/graphql");
   });
 
   app.get("/", (_, res) => {
