@@ -44,7 +44,7 @@ export class UserResolver {
   }
 
   @Mutation(() => UserResponse)
-  async register(@Arg("options") options: UserNamePasswordInput, @Ctx() { em }: MyContext): Promise<UserResponse> {
+  async register(@Arg("options") options: UserNamePasswordInput, @Ctx() { em, req }: MyContext): Promise<UserResponse> {
     const hashedPassword = await argon2.hash(options.password);
     if (options.username.length <= 2) {
       return {
@@ -74,6 +74,9 @@ export class UserResolver {
     });
 
     await em.persistAndFlush(user);
+
+    // log user in after register
+    req.session.userId = user.id;
     return { user };
   }
 
