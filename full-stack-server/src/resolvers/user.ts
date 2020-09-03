@@ -72,11 +72,11 @@ export class UserResolver {
       username: options.username,
       password: hashedPassword,
     });
+    // log user in after register
+    req.session.userId = user.id;
 
     await em.persistAndFlush(user);
 
-    // log user in after register
-    req.session.userId = user.id;
     return { user };
   }
 
