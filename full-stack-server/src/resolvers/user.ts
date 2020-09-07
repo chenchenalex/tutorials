@@ -72,10 +72,24 @@ export class UserResolver {
       username: options.username,
       password: hashedPassword,
     });
-    // log user in after register
-    req.session.userId = user.id;
 
-    await em.persistAndFlush(user);
+    try {
+      await em.persistAndFlush(user);
+    } catch (err) {
+      if (err.code === "23505") {
+        // duplicate user error
+        return {
+          errors: [
+            {
+              field: "username",
+              message: "username already taken",
+            },
+          ],
+        };
+      }
+    }
+    console.log(user);
+    req.session.userId = user.id;
 
     return { user };
   }
