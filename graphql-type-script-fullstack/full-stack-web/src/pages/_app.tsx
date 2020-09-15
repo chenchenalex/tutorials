@@ -3,7 +3,7 @@ import { Provider, createClient, dedupExchange, fetchExchange } from "urql";
 import { cacheExchange, Cache, QueryInput } from "@urql/exchange-graphcache";
 
 import theme from "../theme";
-import { MeDocument, LoginMutation, MeQuery } from "../generated/graphql";
+import { MeDocument, LoginMutation, MeQuery, RegisterMutation, LogoutMutation } from "../generated/graphql";
 
 function betterUpdateQuery<Result, Query>(
   cache: Cache,
@@ -26,12 +26,30 @@ const client = createClient({
     cacheExchange({
       updates: {
         Mutation: {
-          login: (result, args, cache, info) => {
-            cache.updateQuery({ query: MeDocument }, (data) => {
-              data.value = 5;
+          login: (_result, _, cache, info) => {
+            betterUpdateQuery<LoginMutation, MeQuery>(cache, { query: MeDocument }, _result, (result, query) => {
+              if (result.login.errors) {
+                return query;
+              } else {
+                return {
+                  me: result.login.user,
+                };
+              }
             });
-
-            betterUpdateQuery<LoginMutation, MeQuery>(cache, { query: MeDocument }, result);
+          },
+          register: (_result, _, cache, info) => {
+            betterUpdateQuery<RegisterMutation, MeQuery>(cache, { query: MeDocument }, _result, (result, query) => {
+              if (result.register.errors) {
+                return query;
+              } else {
+                return {
+                  me: result.register.user,
+                };
+              }
+            });
+          },
+          logout: (_result, args, cache, info) => {
+            betterUpdateQuery<LogoutMutation, MeQuery>(cache, { query: MeDocument }, _result, () => ({ me: null }));
           },
         },
       },
