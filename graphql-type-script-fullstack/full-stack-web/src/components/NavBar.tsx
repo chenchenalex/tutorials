@@ -8,6 +8,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
   const [{ data, fetching }] = useMeQuery();
   const [{ fetching: logoutFetching }, logout] = useLogoutMutation();
   let body = null;
+
   if (fetching) {
     // data loading
   } else if (!data?.me) {
