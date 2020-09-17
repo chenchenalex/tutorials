@@ -8,7 +8,7 @@ const Index = () => {
   return (
     <>
       <NavBar />
-      {!data ? null : data.posts.map((p: Post) => <div key={p.id}>{p.title}</div>)}
+      {!data ? <div>loading...</div> : data.posts.map((p: Post) => <div key={p.id}>{p.title}</div>)}
     </>
   );
 };

@@ -16,7 +16,7 @@ import connectRedis from "connect-redis";
 
 const main = async () => {
   const orm = await MikroORM.init(microConfigs);
-  await orm.getMigrator().up();
+  // await orm.getMigrator().up();
 
   const app = express();
 
