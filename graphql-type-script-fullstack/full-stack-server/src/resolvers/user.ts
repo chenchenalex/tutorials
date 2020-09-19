@@ -1,9 +1,11 @@
-import { Resolver, Field, Mutation, Arg, Ctx, ObjectType, Query } from "type-graphql";
-import { MyContext } from "src/types";
-import { User } from "../entity/User";
-import argon2 from "argon2";
 import { EntityManager } from "@mikro-orm/postgresql";
-import { COOKIE_NAME } from "../constants";
+import argon2 from "argon2";
+import { MyContext } from "src/types";
+import { Arg, Ctx, Field, Mutation, ObjectType, Query, Resolver } from "type-graphql";
+import { v4 } from "uuid";
+import { COOKIE_NAME, FORGET_PASSWORD_PREFIX } from "../constants";
+import { User } from "../entity/User";
+import sendEmail from "../utils/sendMail";
 import { validateRegister } from "../utils/validate";
 import { UserNamePasswordInput } from "./UserNamePasswordInput";
 
@@ -142,8 +144,17 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
-  async forgotPassword(@Arg("email") email: string, @Ctx() { em }: MyContext) {
-    await em.findOne(User, { email });
+  async forgotPassword(@Arg("email") email: string, @Ctx() { em, redis }: MyContext) {
+    const user = await em.findOne(User, { email });
+    if (!user) {
+      // the email is not in the db
+      return true;
+    }
+
+    const token = v4(); // generate random tokens
+    await redis.set(FORGET_PASSWORD_PREFIX + token, user.id, "ex", 1000 * 60 * 60 * 24 * 3);
+
+    sendEmail(email, `<a href="http://localhost:3000/change-password/${token}">reset password</a>`);
     return true;
   }
 }
