@@ -1,6 +1,7 @@
-import { Box, Button } from "@chakra-ui/core";
+import { Box, Button, Flex, Link } from "@chakra-ui/core";
 import { Form, Formik } from "formik";
 import { withUrqlClient } from "next-urql";
+import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import InputField from "../components/InputField";
@@ -27,10 +28,15 @@ const Login: React.FC<{}> = ({}) => {
       >
         {({ isSubmitting }) => (
           <Form>
-            <InputField name="userNameOrEmail" placeholder="userNameOrEmail" label="Username or Email" />
+            <InputField name="userNameOrEmail" placeholder="input username or email" label="Username or Email" />
             <Box>
               <InputField name="password" placeholder="password" label="Password" type="password" />
             </Box>
+            <Flex mt={2} justifyContent="flex-end">
+              <NextLink href="/forgot-password">
+                <Link>forgot password</Link>
+              </NextLink>
+            </Flex>
             <Button type="submit" isLoading={isSubmitting} variantColor="teal" mt={4}>
               Login
             </Button>
