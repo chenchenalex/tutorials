@@ -8,21 +8,19 @@ import "reflect-metadata";
 import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
 import { COOKIE_NAME, __prod__ } from "./constants";
-import { Post } from "./entity/Post";
-import { User } from "./entity/User";
 import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
 
 const main = async () => {
-  createConnection({
+  await createConnection({
     type: "postgres",
     database: "lireddit",
     username: "postgres",
     password: "120488",
     logging: true,
     synchronize: true,
-    entities: [Post, User],
+    entities: [__dirname + "/entity/*{.js,.ts}"],
   });
 
   const app = express();
