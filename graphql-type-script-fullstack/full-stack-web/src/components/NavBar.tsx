@@ -30,6 +30,11 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
     body = (
       <>
         <Flex>
+          <Box mr={2}>
+            <NextLink href="/create-post">
+              <Link>create post</Link>
+            </NextLink>
+          </Box>
           <Box mr={2}>{data.me.username}</Box>
           <Button
             variant="link"
@@ -46,7 +51,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
     );
   }
   return (
-    <Flex bg="tan" p={4}>
+    <Flex position="sticky" top={0} zIndex={2} bg="tan" p={4}>
       <Box ml={"auto"}>{body}</Box>
     </Flex>
   );
