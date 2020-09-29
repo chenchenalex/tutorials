@@ -4,11 +4,19 @@ import { Post, usePostsQuery } from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 
 const Index = () => {
-  const [{ data }] = usePostsQuery();
+  const [{ data }] = usePostsQuery({
+    variables: {
+      limit: 10,
+    },
+  });
   return (
     <>
       <NavBar />
-      {!data ? <div>loading...</div> : data.posts.map((p: Post) => <div key={p.id}>{p.title}</div>)}
+      {!data ? (
+        <div>loading...</div>
+      ) : (
+        data.posts.map((p) => <div key={p.id}>{p.title}</div>)
+      )}
     </>
   );
 };
