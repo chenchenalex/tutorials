@@ -27,6 +27,7 @@ class PostInput {
 
 @Resolver(Post)
 export class PostResolver {
+  // resolve a field based on other fields
   @FieldResolver(() => String)
   textSnippet(@Root() root: Post) {
     return root.text.slice(0, 50);

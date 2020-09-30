@@ -30,11 +30,6 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
     body = (
       <>
         <Flex>
-          <Box mr={2}>
-            <NextLink href="/create-post">
-              <Link>create post</Link>
-            </NextLink>
-          </Box>
           <Box mr={2}>{data.me.username}</Box>
           <Button
             variant="link"
