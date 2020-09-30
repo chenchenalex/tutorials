@@ -26,7 +26,6 @@ const main = async () => {
   });
 
   await conn.runMigrations();
-  // conn.dropDatabase();
   const app = express();
 
   app.use(

@@ -98,7 +98,7 @@ export const cursorPagination = (): Resolver => {
   return (_parent, fieldArgs, cache, info) => {
     const { parentKey: entityKey, fieldName } = info;
     const allFields = cache.inspectFields(entityKey);
-    console.log("All fields", allFields);
+
     const fieldInfos = allFields.filter((info) => info.fieldName === fieldName);
     const size = fieldInfos.length;
     if (size === 0) {
@@ -108,7 +108,6 @@ export const cursorPagination = (): Resolver => {
     const fieldKey = `${fieldName}(${stringifyVariables(fieldArgs)})`;
     const isInTheCache = cache.resolveFieldByKey(entityKey, fieldKey);
     info.partial = !isInTheCache;
-    console.log(`isIn cache ${isInTheCache}`);
     const results: string[] = [];
     fieldInfos.forEach((fi) => {
       const data = cache.resolveFieldByKey(entityKey, fi.fieldKey) as string[];
