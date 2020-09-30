@@ -41,6 +41,7 @@ export type Post = {
   title: Scalars['String'];
   text: Scalars['String'];
   points: Scalars['Float'];
+  textSnippet: Scalars['String'];
 };
 
 export type User = {
@@ -238,7 +239,7 @@ export type PostsQuery = (
   { __typename?: 'Query' }
   & { posts: Array<(
     { __typename?: 'Post' }
-    & Pick<Post, 'id' | 'createdAt' | 'updatedAt' | 'title' | 'text' | 'points'>
+    & Pick<Post, 'id' | 'createdAt' | 'updatedAt' | 'title' | 'textSnippet' | 'points'>
   )> }
 );
 
@@ -348,7 +349,7 @@ export const PostsDocument = gql`
     createdAt
     updatedAt
     title
-    text
+    textSnippet
     points
   }
 }
