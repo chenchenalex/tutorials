@@ -51,17 +51,45 @@ export class PostResolver {
     const realLimit = Math.min(50, limit);
     // 20 -> 21 this is a trick to get one more item than needed to test whether there are more items to fetch
     const realLimitPlusOne = realLimit + 1;
-    const qb = await getConnection()
-      .getRepository(Post)
-      .createQueryBuilder("p")
-      .orderBy('"createdAt"', "DESC")
-      .take(realLimitPlusOne);
 
+    const replacements: any[] = [realLimitPlusOne];
     if (cursor) {
-      qb.where('"createdAt" < :cursor', { cursor: new Date(parseInt(cursor)) });
+      replacements.push(new Date(parseInt(cursor)));
     }
+    const posts = await getConnection().query(
+      `
+      select p.*,
+      json_build_object(
+        'username', u.username,
+        'id', u.id,
+        'email', u.email,
+        'createdAt', u."createdAt",
+        'updatedAt', u."updatedAt"
+      ) creator
+      from post p
+      inner join public.user u on u.id= p."creatorId"
+      ${cursor ? `where p."createdAt" < $2` : ""} 
+      order by p."createdAt" DESC
+      limit $1
+    `,
+      replacements
+    );
 
-    const posts = await qb.getMany();
+    // const qb = await getConnection()
+    //   .getRepository(Post)
+    //   .createQueryBuilder("p")
+    //   .innerJoinAndSelect("p.creator", "u", 'u.id = "creatorId"')
+    //   .orderBy('p."createdAt"', "DESC")
+    //   .take(realLimitPlusOne);
+
+    // if (cursor) {
+    //   qb.where('p."createdAt" < :cursor', {
+    //     cursor: new Date(parseInt(cursor)),
+    //   });
+    // }
+
+    // const posts = await qb.getMany();
+    console.log(posts);
 
     return {
       posts: posts.slice(0, realLimit),

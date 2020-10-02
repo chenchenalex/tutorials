@@ -22,7 +22,7 @@ const errorExchange: Exchange = ({ forward }) => (ops$) => {
     tap(({ error }) => {
       if (error?.message.includes("not authenticated")) {
         Router.replace("/login");
-        // if error ris a combinederror with networkErrror and graphqlErrors propertiees
+        // if error ris a combinederror with networkErrror and graphqlErrors properties
       }
     })
   );
@@ -124,8 +124,6 @@ export const cursorPagination = (): Resolver => {
       if (!_hasMore) {
         hasMore = false;
       }
-      console.log("data:", data);
-      console.log("hasMore:", hasMore);
       results.push(...data);
     });
 

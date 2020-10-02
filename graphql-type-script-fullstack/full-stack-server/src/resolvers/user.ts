@@ -1,6 +1,16 @@
 import argon2 from "argon2";
 import { MyContext } from "src/types";
-import { Arg, Ctx, Field, Mutation, ObjectType, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Ctx,
+  Field,
+  FieldResolver,
+  Mutation,
+  ObjectType,
+  Query,
+  Resolver,
+  Root,
+} from "type-graphql";
 // import { getConnection } from "typeorm";
 import { v4 } from "uuid";
 import { COOKIE_NAME, FORGET_PASSWORD_PREFIX } from "../constants";
@@ -27,8 +37,19 @@ class UserResponse {
   user?: User;
 }
 
-@Resolver()
+@Resolver(User)
 export class UserResolver {
+  @FieldResolver(() => String)
+  email(@Root() user: User, @Ctx() { req }: MyContext) {
+    // current user is checking the posts he posted
+    if (req.session.userId === user.id) {
+      return user.email;
+    }
+
+    // other user is viewing the post not posted by them
+    return "";
+  }
+
   @Mutation(() => UserResponse)
   async changePassword(
     @Arg("token") token: string,
@@ -75,7 +96,10 @@ export class UserResolver {
       };
     }
 
-    await User.update({ id: userIdNum }, { password: await argon2.hash(newPassword) });
+    await User.update(
+      { id: userIdNum },
+      { password: await argon2.hash(newPassword) }
+    );
     await redis.del(key);
 
     // log in user after chang password
@@ -94,7 +118,10 @@ export class UserResolver {
   }
 
   @Mutation(() => UserResponse)
-  async register(@Arg("options") options: UserNamePasswordInput, @Ctx() { req }: MyContext): Promise<UserResponse> {
+  async register(
+    @Arg("options") options: UserNamePasswordInput,
+    @Ctx() { req }: MyContext
+  ): Promise<UserResponse> {
     const errors = validateRegister(options);
     if (errors) {
       return { errors };
@@ -151,7 +178,9 @@ export class UserResolver {
     @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
     const user = await User.findOne(
-      userNameOrEmail.includes("@") ? { where: { email: userNameOrEmail } } : { where: { username: userNameOrEmail } }
+      userNameOrEmail.includes("@")
+        ? { where: { email: userNameOrEmail } }
+        : { where: { username: userNameOrEmail } }
     );
 
     if (!user) {
@@ -200,7 +229,10 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
-  async forgotPassword(@Arg("email") email: string, @Ctx() { redis }: MyContext) {
+  async forgotPassword(
+    @Arg("email") email: string,
+    @Ctx() { redis }: MyContext
+  ) {
     const user = await User.findOne({ where: { email } });
     if (!user) {
       // the email is not in the db
@@ -208,9 +240,17 @@ export class UserResolver {
     }
 
     const token = v4(); // generate random tokens
-    await redis.set(FORGET_PASSWORD_PREFIX + token, user.id, "ex", 1000 * 60 * 60 * 24 * 3);
+    await redis.set(
+      FORGET_PASSWORD_PREFIX + token,
+      user.id,
+      "ex",
+      1000 * 60 * 60 * 24 * 3
+    );
 
-    sendEmail(email, `<a href="http://localhost:3000/change-password/${token}">reset password</a>`);
+    sendEmail(
+      email,
+      `<a href="http://localhost:3000/change-password/${token}">reset password</a>`
+    );
     return true;
   }
 }
