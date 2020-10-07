@@ -15,6 +15,7 @@ import {
   RegisterMutation,
 } from "../generated/graphql";
 import betterUpdateQuery from "./betterUpdateQuery";
+import { MAX_LIMIT_POST } from "./constants";
 
 const errorExchange: Exchange = ({ forward }) => (ops$) => {
   return pipe(
@@ -47,6 +48,17 @@ export const createUrqlClient = (ssrExchange: any) => ({
       },
       updates: {
         Mutation: {
+          createPost: (_result, _, cache) => {
+            const allFields = cache.inspectFields("Query");
+            const fieldInfos = allFields.filter(
+              (info) => info.fieldName === "posts"
+            );
+
+            // fieldInfo.arguments, eg.  {limit: 10}
+            fieldInfos.forEach((fieldInfo) => {
+              cache.invalidate("Query", "posts", fieldInfo.arguments || {});
+            });
+          },
           logout: (_result, _, cache) => {
             betterUpdateQuery<LogoutMutation, MeQuery>(
               cache,
@@ -100,30 +112,36 @@ export const createUrqlClient = (ssrExchange: any) => ({
 export const cursorPagination = (): Resolver => {
   return (_parent, fieldArgs, cache, info) => {
     const { parentKey: entityKey, fieldName } = info;
+    // get all client request fields
     const allFields = cache.inspectFields(entityKey);
-
     const fieldInfos = allFields.filter((info) => info.fieldName === fieldName);
     const size = fieldInfos.length;
     if (size === 0) {
       return undefined;
     }
 
+    // create a key that includes the query params
     const fieldKey = `${fieldName}(${stringifyVariables(fieldArgs)})`;
     const isInTheCache = cache.resolve(
       cache.resolveFieldByKey(entityKey, fieldKey) as string,
       "posts"
     );
 
+    // if info.partial = true, will fetch more from server
     info.partial = !isInTheCache;
     const results: string[] = [];
     let hasMore = true;
+
     fieldInfos.forEach((fi) => {
+      // things get strange here
       const key = cache.resolveFieldByKey(entityKey, fi.fieldKey) as string;
       const data = cache.resolve(key, "posts") as string[];
       const _hasMore = cache.resolve(key, "hasMore");
       if (!_hasMore) {
         hasMore = false;
       }
+
+      // push the cache result into final result
       results.push(...data);
     });
 

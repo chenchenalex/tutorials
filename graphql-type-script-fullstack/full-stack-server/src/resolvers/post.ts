@@ -1,4 +1,3 @@
-import { isAuth } from "../middleware/isAuth";
 import { MyContext } from "src/types";
 import {
   Arg,
@@ -14,8 +13,9 @@ import {
   Root,
   UseMiddleware,
 } from "type-graphql";
-import { Post } from "../entity/Post";
 import { getConnection } from "typeorm";
+import { Post } from "../entity/Post";
+import { isAuth } from "../middleware/isAuth";
 
 @InputType()
 class PostInput {
@@ -89,7 +89,6 @@ export class PostResolver {
     // }
 
     // const posts = await qb.getMany();
-    console.log(posts);
 
     return {
       posts: posts.slice(0, realLimit),
@@ -137,5 +136,40 @@ export class PostResolver {
     } catch (e) {
       return false;
     }
+  }
+
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async vote(
+    @Arg("postId", () => Int) postId: number,
+    @Arg("value", () => Int) value: number,
+    @Ctx() { req }: MyContext
+  ) {
+    const { userId } = req.session;
+
+    const isUpdoot = value !== -1;
+    const realValue = isUpdoot ? 1 : -1;
+    // await Updoot.insert({
+    //   userId,
+    //   postId,
+    //   value: realValue,
+    // });
+
+    await getConnection().query(
+      `
+      START TRANSACTION;
+
+      insert into updoot ("userId", "postId", "value")
+      values (${userId}, ${postId}, ${realValue});
+
+      update post
+      set points = points + ${realValue}
+      where id = ${userId};
+
+      COMMIT;
+    `
+    );
+
+    return true;
   }
 }
