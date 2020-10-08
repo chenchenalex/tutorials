@@ -164,7 +164,7 @@ export class PostResolver {
 
       update post
       set points = points + ${realValue}
-      where id = ${userId};
+      where id = ${postId};
 
       COMMIT;
     `
